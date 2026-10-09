@@ -1,49 +1,41 @@
 
 import os
 from pathlib import Path
-
-from dotenv import load_dotenv
 from datetime import timedelta
 
+import dj_database_url
+from dotenv import load_dotenv
 
-# --------------------------------------------------
+
+# ==================================================
 # BASE DIRECTORY AND ENVIRONMENT
-# --------------------------------------------------
+# ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 load_dotenv(BASE_DIR / ".env")
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://cmrs-nu.vercel.app",
-]
-# --------------------------------------------------
-# SECURITY SETTINGS
-# --------------------------------------------------
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
-    "django-insecure-local-development-only-change-me"
+    "django-insecure-local-development-only-change-me",
 )
-
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "DJANGO_ALLOWED_HOSTS",
-        "127.0.0.1,localhost,cmrs-fq4z.onrender.com"
+        "127.0.0.1,localhost,cmrs-fq4z.onrender.com",
     ).split(",")
     if host.strip()
 ]
 
 
-# --------------------------------------------------
+# ==================================================
 # APPLICATIONS
-# --------------------------------------------------
+# ==================================================
 
 INSTALLED_APPS = [
-    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -51,18 +43,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Third-party apps
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
     "drf_spectacular",
 
-    # CMRS apps
     "accounts",
     "branches",
     "customers",
     "loans",
-        "cash_collections",
+    "cash_collections",
     "reconciliation",
     "deposits",
     "settlements",
@@ -71,12 +61,13 @@ INSTALLED_APPS = [
 ]
 
 
-# --------------------------------------------------
+# ==================================================
 # MIDDLEWARE
-# --------------------------------------------------
+# ==================================================
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -87,18 +78,17 @@ MIDDLEWARE = [
 ]
 
 
-# --------------------------------------------------
-# URL AND WSGI CONFIGURATION
-# --------------------------------------------------
+# ==================================================
+# URL AND WSGI
+# ==================================================
 
 ROOT_URLCONF = "config.urls"
-
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# --------------------------------------------------
+# ==================================================
 # TEMPLATES
-# --------------------------------------------------
+# ==================================================
 
 TEMPLATES = [
     {
@@ -117,58 +107,65 @@ TEMPLATES = [
 ]
 
 
-# --------------------------------------------------
-# POSTGRESQL DATABASE
-# --------------------------------------------------
+# ==================================================
+# DATABASE
+# Uses Render DATABASE_URL in production.
+# Falls back to local PostgreSQL for development.
+# ==================================================
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", "cmrs_db"),
-        "USER": os.getenv("DB_USER", "postgres"),
-        "PASSWORD": os.getenv("DB_PASSWORD", ""),
-        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
-        "PORT": os.getenv("DB_PORT", "5432"),
-        "CONN_MAX_AGE": 60,
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DB_NAME", "cmrs_db"),
+            "USER": os.getenv("DB_USER", "postgres"),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+            "PORT": os.getenv("DB_PORT", "5432"),
+            "CONN_MAX_AGE": 60,
+        }
+    }
 
 
-# --------------------------------------------------
+# ==================================================
 # CUSTOM USER MODEL
-# --------------------------------------------------
+# ==================================================
 
 AUTH_USER_MODEL = "accounts.User"
 
 
-# --------------------------------------------------
+# ==================================================
 # DJANGO REST FRAMEWORK
-# --------------------------------------------------
+# ==================================================
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-
-    "DEFAULT_SCHEMA_CLASS": (
-        "drf_spectacular.openapi.AutoSchema"
-    ),
-
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": (
         "rest_framework.pagination.PageNumberPagination"
     ),
-
     "PAGE_SIZE": 20,
 }
 
 
-# --------------------------------------------------
-# JWT CONFIGURATION
-# --------------------------------------------------
+# ==================================================
+# JWT
+# ==================================================
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -177,39 +174,44 @@ SIMPLE_JWT = {
 }
 
 
-# --------------------------------------------------
-# SWAGGER / OPENAPI
-# --------------------------------------------------
+# ==================================================
+# API DOCUMENTATION
+# ==================================================
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "CMRS API",
-    "DESCRIPTION": (
-        "Cash Management and Reconciliation System API"
-    ),
+    "DESCRIPTION": "Cash Management and Reconciliation System API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
 
-# --------------------------------------------------
-# CORS CONFIGURATION
-# --------------------------------------------------
-
-# CORS CONFIGURATION
+# ==================================================
+# CORS AND CSRF
+# ==================================================
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "https://cmrs-nu.vercel.app,http://localhost:5173"
+        "https://cmrs-nu.vercel.app,http://localhost:5173",
+    ).split(",")
+    if origin.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "https://cmrs-nu.vercel.app",
     ).split(",")
     if origin.strip()
 ]
 
 
-# --------------------------------------------------
+# ==================================================
 # PASSWORD VALIDATION
-# --------------------------------------------------
+# ==================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -239,39 +241,33 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# --------------------------------------------------
+# ==================================================
 # LANGUAGE AND TIME ZONE
-# --------------------------------------------------
+# ==================================================
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Asia/Kolkata"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# --------------------------------------------------
+# ==================================================
 # STATIC FILES
-# --------------------------------------------------
+# ==================================================
 
 STATIC_URL = "static/"
-
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-# --------------------------------------------------
-# EMAIL CONFIGURATION
-# --------------------------------------------------
+# ==================================================
+# EMAIL
+# ==================================================
 
-EMAIL_BACKEND = (
-    "django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-# --------------------------------------------------
+# ==================================================
 # DEFAULT PRIMARY KEY
-# --------------------------------------------------
+# ==================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
