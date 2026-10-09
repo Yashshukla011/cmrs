@@ -20,10 +20,13 @@ class Command(BaseCommand):
                 "DEPLOY_USER_PASSWORD must be set."
             )
 
-        if User.objects.filter(username=username).exists():
-            raise CommandError(
-                "Username already exists. No changes were made."
-            )
+     if User.objects.filter(username=username).exists():
+    self.stdout.write(
+        self.style.WARNING(
+            "Admin username already exists. No changes made."
+        )
+    )
+    return
 
         if User.objects.filter(email=email).exists():
             raise CommandError(
