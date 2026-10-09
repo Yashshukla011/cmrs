@@ -1,5 +1,6 @@
 
 import os
+
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 
@@ -20,17 +21,20 @@ class Command(BaseCommand):
                 "DEPLOY_USER_PASSWORD must be set."
             )
 
-     if User.objects.filter(username=username).exists():
-    self.stdout.write(
-        self.style.WARNING(
-            "Admin username already exists. No changes made."
-        )
-    )
-    return
+        # Do not recreate or modify an existing account.
+        if User.objects.filter(username=username).exists():
+            self.stdout.write(
+                self.style.WARNING(
+                    "Username already exists. No changes made."
+                )
+            )
+            return
 
+        # Avoid creating a duplicate email account.
         if User.objects.filter(email=email).exists():
             raise CommandError(
-                "Email already exists. No changes were made."
+                "Email already exists for another account. "
+                "Choose the correct existing account or a new email."
             )
 
         User.objects.create_superuser(
