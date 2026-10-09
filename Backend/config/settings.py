@@ -14,7 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://cmrs-nu.vercel.app",
+]
 # --------------------------------------------------
 # SECURITY SETTINGS
 # --------------------------------------------------
@@ -30,7 +32,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "DJANGO_ALLOWED_HOSTS",
-        "127.0.0.1,localhost"
+        "127.0.0.1,localhost,cmrs-fq4z.onrender.com"
     ).split(",")
     if host.strip()
 ]
@@ -193,11 +195,13 @@ SPECTACULAR_SETTINGS = {
 # CORS CONFIGURATION
 # --------------------------------------------------
 
+# CORS CONFIGURATION
+
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:5173"
+        "https://cmrs-nu.vercel.app,http://localhost:5173"
     ).split(",")
     if origin.strip()
 ]
