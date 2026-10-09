@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000/api";
+const BASE_URL = "https://cmrs-fq4z.onrender.com";
 
 async function request(method, endpoint, body = null) {
 const token =
