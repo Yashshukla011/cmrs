@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
+import API from "../services/api";
 import "./ModulePage.css";
-const API = "http://127.0.0.1:8000/api";
 
 const MODULES = {
   "/customers/": {
@@ -15,6 +15,7 @@ const MODULES = {
       { name: "branch", label: "Branch ID", type: "number", required: true },
     ],
   },
+
   "/loans/": {
     createTitle: "Create Loan",
     fields: [
@@ -24,177 +25,91 @@ const MODULES = {
       { name: "interest_rate", label: "Interest Rate (%)", type: "number", required: true, defaultValue: "0" },
       { name: "tenure_months", label: "Tenure (Months)", type: "number", required: true },
       { name: "outstanding_balance", label: "Outstanding Balance", type: "number", required: true },
-      { name: "status", label: "Status", type: "select", options: ["ACTIVE", "CLOSED", "DEFAULTED"], defaultValue: "ACTIVE" },
+      {
+        name: "status",
+        label: "Status",
+        type: "select",
+        options: ["ACTIVE", "CLOSED", "DEFAULTED"],
+        defaultValue: "ACTIVE",
+      },
       { name: "issued_at", label: "Issued Date", type: "date", required: true },
     ],
   },
-  
-"/collections/": {
-  createTitle: "Record Cash Collection",
-  fields: [
-    {
-      name: "receipt_number",
-      label: "Receipt Number",
-      required: true,
-    },
-    {
-      name: "branch",
-      label: "Branch ID",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "customer",
-      label: "Customer",
-      type: "customer",
-      required: true,
-    },
-    {
-      name: "agent",
-      label: "Agent ID",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "loan",
-      label: "Loan ID",
-      type: "number",
-    },
-    {
-      name: "amount",
-      label: "Collected Amount",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "payment_mode",
-      label: "Payment Mode",
-      type: "select",
-      options: ["CASH", "UPI", "BANK_TRANSFER", "CHEQUE"],
-      required: true,
-      defaultValue: "CASH",
-    },
-    {
-      name: "collected_at",
-      label: "Collection Date",
-      type: "date",
-      required: true,
-    },
-    {
-      name: "status",
-      label: "Status",
-      type: "select",
-      options: ["COLLECTED", "PENDING", "RECONCILED"],
-      defaultValue: "COLLECTED",
-    },
-  ],
-},
-"/reconciliation/": {
-  createTitle: "Record Reconciliation",
-  fields: [
-    {
-      name: "reconciliation_date",
-      label: "Reconciliation Date",
-      type: "date",
-      required: true,
-    },
-    {
-      name: "branch",
-      label: "Branch ID",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "expected_amount",
-      label: "Expected Amount",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "actual_amount",
-      label: "Actual Amount",
-      type: "number",
-      required: true,
-    },
-  ],
-},
 
-"/deposits/": {
-  createTitle: "Record Deposit",
-  fields: [
-    {
-      name: "deposit_number",
-      label: "Deposit Number",
-      required: true,
-    },
-    {
-      name: "deposit_type",
-      label: "Deposit Type",
-      type: "select",
-      options: ["BRANCH", "BANK"],
-      defaultValue: "BRANCH",
-      required: true,
-    },
-    {
-      name: "branch",
-      label: "Branch ID",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "amount",
-      label: "Deposit Amount",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "deposit_reference",
-      label: "Bank Deposit Reference",
-      required: false,
-    },
-    {
-      name: "notes",
-      label: "Notes",
-      required: false,
-    },
-  ],
-},
-"/settlements/": {
-  createTitle: "Record Settlement",
-  fields: [
-    {
-      name: "settlement_reference",
-      label: "Settlement Reference",
-      required: true,
-    },
-    {
-      name: "bank_deposit",
-      label: "Bank Deposit ID",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "amount",
-      label: "Settlement Amount",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "settlement_date",
-      label: "Settlement Date",
-      type: "date",
-      required: true,
-    },
-    {
-      name: "status",
-      label: "Status",
-      type: "select",
-      options: ["PENDING"],
-      defaultValue: "PENDING",
-      required: true,
-    },
-  ],
-},
+  "/collections/": {
+    createTitle: "Record Cash Collection",
+    fields: [
+      { name: "receipt_number", label: "Receipt Number", required: true },
+      { name: "branch", label: "Branch ID", type: "number", required: true },
+      { name: "customer", label: "Customer", type: "customer", required: true },
+      { name: "agent", label: "Agent ID", type: "number", required: true },
+      { name: "loan", label: "Loan ID", type: "number" },
+      { name: "amount", label: "Collected Amount", type: "number", required: true },
+      {
+        name: "payment_mode",
+        label: "Payment Mode",
+        type: "select",
+        options: ["CASH", "UPI", "BANK_TRANSFER", "CHEQUE"],
+        required: true,
+        defaultValue: "CASH",
+      },
+      { name: "collected_at", label: "Collection Date", type: "date", required: true },
+      {
+        name: "status",
+        label: "Status",
+        type: "select",
+        options: ["COLLECTED", "PENDING", "RECONCILED"],
+        defaultValue: "COLLECTED",
+      },
+    ],
+  },
+
+  "/reconciliation/": {
+    createTitle: "Record Reconciliation",
+    fields: [
+      { name: "reconciliation_date", label: "Reconciliation Date", type: "date", required: true },
+      { name: "branch", label: "Branch ID", type: "number", required: true },
+      { name: "expected_amount", label: "Expected Amount", type: "number", required: true },
+      { name: "actual_amount", label: "Actual Amount", type: "number", required: true },
+    ],
+  },
+
+  "/deposits/": {
+    createTitle: "Record Deposit",
+    fields: [
+      { name: "deposit_number", label: "Deposit Number", required: true },
+      {
+        name: "deposit_type",
+        label: "Deposit Type",
+        type: "select",
+        options: ["BRANCH", "BANK"],
+        defaultValue: "BRANCH",
+        required: true,
+      },
+      { name: "branch", label: "Branch ID", type: "number", required: true },
+      { name: "amount", label: "Deposit Amount", type: "number", required: true },
+      { name: "deposit_reference", label: "Bank Deposit Reference" },
+      { name: "notes", label: "Notes" },
+    ],
+  },
+
+  "/settlements/": {
+    createTitle: "Record Settlement",
+    fields: [
+      { name: "settlement_reference", label: "Settlement Reference", required: true },
+      { name: "bank_deposit", label: "Bank Deposit ID", type: "number", required: true },
+      { name: "amount", label: "Settlement Amount", type: "number", required: true },
+      { name: "settlement_date", label: "Settlement Date", type: "date", required: true },
+      {
+        name: "status",
+        label: "Status",
+        type: "select",
+        options: ["PENDING"],
+        defaultValue: "PENDING",
+        required: true,
+      },
+    ],
+  },
 };
 
 function getInitialValues(fields) {
@@ -211,16 +126,19 @@ function getInitialValues(fields) {
 
 function getErrorMessage(result, status) {
   if (result && typeof result === "object") {
-    return Object.entries(result)
-      .map(([key, value]) => {
-        const message =
-          typeof value === "object"
-            ? JSON.stringify(value)
-            : String(value);
-        return `${key}: ${message}`;
-      })
-      .join(" | ") || `Request failed (${status})`;
+    return (
+      Object.entries(result)
+        .map(([key, value]) => {
+          const message =
+            typeof value === "object"
+              ? JSON.stringify(value)
+              : String(value);
+          return `${key}: ${message}`;
+        })
+        .join(" | ") || `Request failed (${status})`
+    );
   }
+
   return `Request failed (${status})`;
 }
 
@@ -237,25 +155,32 @@ export default function ModulePage({ title, endpoint, description }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Use the existing Axios instance and its JWT interceptor.
   async function request(url, options = {}) {
-    const token = localStorage.getItem("access");
+    try {
+      const response = await API.request({
+        url,
+        method: options.method || "GET",
+        data: options.body ? JSON.parse(options.body) : undefined,
+        headers: options.headers,
+      });
 
-    const response = await fetch(`${API}${url}`, {
-      ...options,
-      headers: {
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...options.headers,
-      },
-    });
+      return response.data;
+    } catch (err) {
+      console.error(
+        "Module API error:",
+        err.response?.status,
+        err.config?.url,
+        err.response?.data || err.message
+      );
 
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(getErrorMessage(result, response.status));
+      throw new Error(
+        getErrorMessage(
+          err.response?.data || { error: err.message },
+          err.response?.status || "Network error"
+        )
+      );
     }
-
-    return result;
   }
 
   async function loadData() {
@@ -264,7 +189,14 @@ export default function ModulePage({ title, endpoint, description }) {
 
     try {
       const result = await request(endpoint);
-      setData(Array.isArray(result) ? result : result.results ?? []);
+
+      setData(
+        Array.isArray(result)
+          ? result
+          : Array.isArray(result?.results)
+            ? result.results
+            : []
+      );
     } catch (err) {
       setError(err.message || "Unable to load records.");
     } finally {
@@ -277,12 +209,19 @@ export default function ModulePage({ title, endpoint, description }) {
   }, [endpoint]);
 
   useEffect(() => {
-    if (!fields.some((field) => field.type === "customer")) return;
+    if (!fields.some((field) => field.type === "customer")) {
+      setCustomers([]);
+      return;
+    }
 
     request("/customers/")
       .then((result) => {
         setCustomers(
-          Array.isArray(result) ? result : result.results ?? []
+          Array.isArray(result)
+            ? result
+            : Array.isArray(result?.results)
+              ? result.results
+              : []
         );
       })
       .catch((err) => setError(err.message));
@@ -309,6 +248,7 @@ export default function ModulePage({ title, endpoint, description }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
     setSaving(true);
     setError("");
     setSuccess("");
@@ -319,7 +259,9 @@ export default function ModulePage({ title, endpoint, description }) {
       for (const field of fields) {
         const value = form[field.name];
 
-        if (value === "" || value === undefined) continue;
+        if (value === "" || value === undefined) {
+          continue;
+        }
 
         payload[field.name] =
           field.type === "number" || field.type === "customer"
@@ -335,6 +277,7 @@ export default function ModulePage({ title, endpoint, description }) {
       setSuccess(`${title} record created successfully.`);
       setForm(getInitialValues(fields));
       setShowForm(false);
+
       await loadData();
     } catch (err) {
       setError(err.message || "Unable to save record.");
@@ -367,7 +310,12 @@ export default function ModulePage({ title, endpoint, description }) {
       </div>
 
       {success && <div className="module-success">{success}</div>}
-      {error && <div className="module-error" role="alert">{error}</div>}
+
+      {error && (
+        <div className="module-error" role="alert">
+          {error}
+        </div>
+      )}
 
       {showForm && config && (
         <form className="module-form" onSubmit={handleSubmit}>
@@ -378,7 +326,9 @@ export default function ModulePage({ title, endpoint, description }) {
               <label className="module-field" key={field.name}>
                 <span>
                   {field.label}
-                  {field.required && <span className="required-mark"> *</span>}
+                  {field.required && (
+                    <span className="required-mark"> *</span>
+                  )}
                 </span>
 
                 {field.type === "customer" ? (
@@ -389,9 +339,12 @@ export default function ModulePage({ title, endpoint, description }) {
                     required={field.required}
                   >
                     <option value="">Select customer</option>
+
                     {customers.map((customer) => (
                       <option key={customer.id} value={customer.id}>
-                        {customer.full_name || customer.name || customer.customer_id}
+                        {customer.full_name ||
+                          customer.name ||
+                          customer.customer_id}
                         {" "}— ID: {customer.id}
                       </option>
                     ))}
@@ -404,6 +357,7 @@ export default function ModulePage({ title, endpoint, description }) {
                     required={field.required}
                   >
                     <option value="">Select {field.label}</option>
+
                     {field.options.map((option) => (
                       <option key={option} value={option}>
                         {option.replaceAll("_", " ")}
@@ -434,7 +388,12 @@ export default function ModulePage({ title, endpoint, description }) {
             >
               Cancel
             </button>
-            <button className="btn-primary" type="submit" disabled={saving}>
+
+            <button
+              className="btn-primary"
+              type="submit"
+              disabled={saving}
+            >
               {saving ? "Saving..." : "Save Record"}
             </button>
           </div>
@@ -444,6 +403,7 @@ export default function ModulePage({ title, endpoint, description }) {
       <div className="module-table-card">
         <div className="module-table-title">
           <h2>{title} Records</h2>
+
           <button
             className="btn-secondary"
             type="button"
@@ -468,12 +428,14 @@ export default function ModulePage({ title, endpoint, description }) {
                   ))}
                 </tr>
               </thead>
+
               <tbody>
                 {data.map((item, index) => (
                   <tr key={item.id ?? index}>
                     {Object.keys(data[0]).map((key) => (
                       <td key={key}>
-                        {item[key] !== null && typeof item[key] === "object"
+                        {item[key] !== null &&
+                        typeof item[key] === "object"
                           ? JSON.stringify(item[key])
                           : String(item[key] ?? "-")}
                       </td>

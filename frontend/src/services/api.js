@@ -1,47 +1,42 @@
-const BASE_URL = "https://cmrs-fq4z.onrender.com";
 
-async function request(method, endpoint, body = null) {
-const token =
-localStorage.getItem("access_token") ||
-localStorage.getItem("access") ||
-localStorage.getItem("token");
+import axios from "axios";
 
-const headers = {
-"Content-Type": "application/json",
-};
-
-if (token) {
-headers.Authorization = `Bearer ${token}`;
-}
-
-const response = await fetch(`${BASE_URL}${endpoint}`, {
-method,
-headers,
-...(body !== null ? { body: JSON.stringify(body) } : {}),
+const API = axios.create({
+  baseURL: "https://cmrs-fq4z.onrender.com/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-const data = await response.json().catch(() => ({}));
+// Attach the saved JWT access token to protected API requests.
+API.interceptors.request.use(
+  (config) => {
+    const token =
+      localStorage.getItem("access") ||
+      localStorage.getItem("accessToken") ||
+      localStorage.getItem("token");
 
-if (!response.ok) {
-const error = new Error(
-data.detail || data.message || `Request failed: ${response.status}`
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
-error.response = {
-status: response.status,
-data,
-};
-throw error;
-}
 
-return { data };
-}
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error(
+      "API error:",
+      error.response?.status,
+      error.config?.url,
+      error.response?.data || error.message
+    );
 
-const api = {
-get: (endpoint) => request("GET", endpoint),
-post: (endpoint, body) => request("POST", endpoint, body),
-put: (endpoint, body) => request("PUT", endpoint, body),
-patch: (endpoint, body) => request("PATCH", endpoint, body),
-delete: (endpoint) => request("DELETE", endpoint),
-};
+    return Promise.reject(error);
+  }
+);
 
-export default api;
+export default API;
