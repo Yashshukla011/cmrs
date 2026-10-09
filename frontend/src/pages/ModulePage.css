@@ -1,0 +1,258 @@
+
+.module-page {
+  padding: 28px;
+  min-width: 0;
+  color: #172033;
+}
+
+.module-heading,
+.module-table-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.module-heading {
+  margin-bottom: 24px;
+}
+
+.module-heading h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 750;
+}
+
+.module-heading p {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.btn-primary,
+.btn-secondary {
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #eef2f7;
+  color: #334155;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.module-form,
+.module-table-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 5px 22px rgba(15, 23, 42, 0.045);
+}
+
+.module-form {
+  padding: 24px;
+  margin-bottom: 26px;
+}
+
+.module-form h2,
+.module-table-title h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.module-form h2 {
+  margin-bottom: 22px;
+}
+
+.module-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.module-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.module-field > span {
+  font-size: 13px;
+  font-weight: 650;
+  color: #334155;
+}
+
+.required-mark {
+  color: #dc2626;
+}
+
+.module-field input,
+.module-field select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.module-field input:focus,
+.module-field select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.module-field input::placeholder {
+  color: #94a3b8;
+}
+
+.module-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.module-table-card {
+  overflow: hidden;
+}
+
+.module-table-title {
+  padding: 20px 22px;
+}
+
+.module-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.module-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.module-table thead {
+  background: #f1f5f9;
+}
+
+.module-table th {
+  padding: 15px 18px;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.35px;
+  font-size: 11px;
+  font-weight: 750;
+  color: #475569;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.module-table td {
+  padding: 14px 18px;
+  color: #334155;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.module-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.module-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.module-message {
+  margin: 0;
+  padding: 30px 22px;
+  color: #64748b;
+  text-align: center;
+}
+
+.module-success,
+.module-error {
+  padding: 13px 16px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.module-success {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.module-error {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 768px) {
+  .module-page {
+    padding: 18px 12px;
+  }
+
+  .module-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .module-heading h1 {
+    font-size: 23px;
+  }
+
+  .module-form {
+    padding: 17px;
+  }
+
+  .module-form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .module-table-title {
+    padding: 16px;
+  }
+
+  .module-table th,
+  .module-table td {
+    padding: 12px;
+  }
+}
