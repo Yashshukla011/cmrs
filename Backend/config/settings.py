@@ -195,15 +195,18 @@ SPECTACULAR_SETTINGS = {
 # CORS CONFIGURATION
 # ==================================================
 
+DEFAULT_CORS_ORIGINS = (
+    "https://cmrs-o5nk85kom-yashshukla011s-projects.vercel.app,"
+    "https://cmrs-nu.vercel.app,"
+    "https://cmrs-iu3m93bue-yashshukla011s-projects.vercel.app,"
+    "http://localhost:5173"
+)
+
 CORS_ALLOWED_ORIGINS = [
-    origin.strip()
+    origin.strip().rstrip("/")
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        (
-            "https://cmrs-iu3m93bue-yashshukla011s-projects.vercel.app,"
-            "https://cmrs-nu.vercel.app,"
-            "http://localhost:5173"
-        ),
+        DEFAULT_CORS_ORIGINS,
     ).split(",")
     if origin.strip()
 ]
