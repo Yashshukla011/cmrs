@@ -3,23 +3,28 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
-import dj_database_url
 from dotenv import load_dotenv
+import dj_database_url
 
 
 # ==================================================
-# BASE DIRECTORY AND ENVIRONMENT
+# BASE DIRECTORY
 # ==================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
+
+# ==================================================
+# SECURITY SETTINGS
+# ==================================================
 
 SECRET_KEY = os.getenv(
     "DJANGO_SECRET_KEY",
     "django-insecure-local-development-only-change-me",
 )
+
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -79,7 +84,7 @@ MIDDLEWARE = [
 
 
 # ==================================================
-# URL AND WSGI
+# URL CONFIGURATION
 # ==================================================
 
 ROOT_URLCONF = "config.urls"
@@ -109,8 +114,8 @@ TEMPLATES = [
 
 # ==================================================
 # DATABASE
-# Uses Render DATABASE_URL in production.
-# Falls back to local PostgreSQL for development.
+# Production: Render PostgreSQL DATABASE_URL
+# Local: PostgreSQL DB_* variables
 # ==================================================
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -164,7 +169,7 @@ REST_FRAMEWORK = {
 
 
 # ==================================================
-# JWT
+# JWT CONFIGURATION
 # ==================================================
 
 SIMPLE_JWT = {
@@ -187,23 +192,35 @@ SPECTACULAR_SETTINGS = {
 
 
 # ==================================================
-# CORS AND CSRF
+# CORS CONFIGURATION
 # ==================================================
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "https://cmrs-nu.vercel.app,http://localhost:5173",
+        (
+            "https://cmrs-iu3m93bue-yashshukla011s-projects.vercel.app,"
+            "https://cmrs-nu.vercel.app,"
+            "http://localhost:5173"
+        ),
     ).split(",")
     if origin.strip()
 ]
+
+
+# ==================================================
+# CSRF TRUSTED ORIGINS
+# ==================================================
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "https://cmrs-nu.vercel.app",
+        (
+            "https://cmrs-iu3m93bue-yashshukla011s-projects.vercel.app,"
+            "https://cmrs-nu.vercel.app"
+        ),
     ).split(",")
     if origin.strip()
 ]
@@ -247,6 +264,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
+
 USE_I18N = True
 USE_TZ = True
 
@@ -255,7 +273,7 @@ USE_TZ = True
 # STATIC FILES
 # ==================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
